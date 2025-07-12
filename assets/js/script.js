@@ -79,9 +79,12 @@ function getTodos(){
 }
 
 
-//PARTICLE CURSOR
+
 const wrapper = document.querySelector('.wrapper');
 const particlesCursor = document.getElementById('particles-cursor');
+
+let lastParticleTime = 0;
+const particleInterval = 1000 / 30; 
 
 function spawnParticle(x, y) {
    const particle = document.createElement('div');
@@ -94,7 +97,7 @@ function spawnParticle(x, y) {
    ];
    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-   const size = 10 + Math.random() * 12;
+   const size = 8 + Math.random() * 8;
    particle.style.width = `${size}px`;
    particle.style.height = `${size}px`;
    particle.style.left = `${x - size/2}px`;
@@ -103,17 +106,15 @@ function spawnParticle(x, y) {
    particlesCursor.appendChild(particle);
 
    const angle = Math.random() * Math.PI * 2;
-   const distance = 24 + Math.random() * 32;
-   const dx = Math.cos(angle) * distance;
-   const dy = Math.sin(angle) * distance;
-   const scale = 0.6 + Math.random() * 0.7;
+   const distance = 18 + Math.random() * 24;
+   const scale = 0.5 + Math.random() * 0.5;
 
    gsap.to(particle, {
-      x: dx,
-      y: dy,
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
       scale: scale,
       opacity: 0,
-      duration: 0.9 + Math.random() * 0.4,
+      duration: 0.35 + Math.random() * 0.18,
       ease: "expo.out",
       onComplete: () => {
          particle.remove();
@@ -122,6 +123,10 @@ function spawnParticle(x, y) {
 }
 
 document.addEventListener('mousemove', (e) => {
+   const now = Date.now();
+   if (now - lastParticleTime < particleInterval) return;
+   lastParticleTime = now;
+
    const rect = wrapper.getBoundingClientRect();
    const x = e.clientX;
    const y = e.clientY;
